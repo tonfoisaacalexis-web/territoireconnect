@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TerritoireConnect | Portail des Communes du Cameroun</title>
-    <!-- Tailwind CSS pour un design professionnel et rapide -->
     <script src="https://tailwindcss.com"></script>
 </head>
 <body class="bg-gray-50 text-gray-800 font-sans">
@@ -29,7 +28,7 @@
         </div>
     </header>
 
-    <!-- AFFICHAGE DES MESSAGES DE NOTIFICATION -->
+    <!-- NOTIFICATIONS -->
     {% if messages %}
     <div class="max-w-7xl mx-auto px-4 mt-6">
         {% for message in messages %}
@@ -40,7 +39,7 @@
     </div>
     {% endif %}
 
-    <!-- CONTENU PRINCIPAL : LISTE DES MAIRIES PAR RÉGIONS -->
+    <!-- LISTE DES MAIRIES PAR RÉGIONS -->
     <main class="max-w-7xl mx-auto px-4 py-12">
         
         <h2 class="text-2xl font-bold text-gray-700 mb-8 border-b-2 border-yellow-500 pb-2 inline-block">
@@ -49,19 +48,15 @@
 
         {% for region in regions %}
         <div class="mb-12">
-            <!-- TITRE DE LA RÉGION -->
             <div class="bg-gray-200 px-4 py-2 rounded-t-lg font-bold text-lg text-green-900 border-l-4 border-green-700 shadow-sm flex justify-between items-center">
                 <span>Région du {{ region.nom }}</span>
                 <span class="text-sm text-gray-500 font-normal">{{ region.departements.count }} Département(s)</span>
             </div>
 
-            <!-- GRILLE DES MAIRIES RATTACHÉES -->
             <div class="bg-white p-6 rounded-b-lg shadow border-x border-b border-gray-200 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {% font_mairie_trouvee = False %}
                 
                 {% for departement in region.departements.all %}
                     {% for mairie in departement.mairies.all %}
-                        {% font_mairie_trouvee = True %}
                         <div class="border rounded-xl p-5 hover:shadow-md transition-shadow bg-gray-50 flex flex-col justify-between">
                             <div>
                                 <div class="flex justify-between items-start mb-2">
@@ -75,30 +70,23 @@
                                 <p class="text-xs text-gray-500 mb-4">Département : {{ departement.nom }}</p>
                             </div>
 
-                            <!-- ACTIONS ACCESSIBLES -->
                             <div class="mt-4 pt-4 border-t border-gray-200 flex flex-wrap gap-2 justify-between items-center">
                                 <a href="{% url 'detail_mairie' slug=mairie.slug %}" class="text-sm font-medium text-green-700 hover:text-green-900 underline">
                                     Voir la Vitrine →
                                 </a>
-                                
-                                <!-- LIEN ADMIN VERS L'ESPACE MAIRE -->
                                 <a href="{% url 'modifier_vitrine_prive' slug=mairie.slug %}" class="text-xs bg-gray-200 hover:bg-gray-300 text-gray-700 px-3 py-1.5 rounded-md font-medium transition-colors flex items-center gap-1">
                                     🔒 Espace Com
                                 </a>
                             </div>
                         </div>
-                    {% empty %}
                     {% endfor %}
                 {% endfor %}
 
-                {% if not font_mairie_trouvee %}
-                <p class="text-sm text-gray-400 italic col-span-full">Aucune mairie enregistrée ou configurée pour cette région.</p>
-                {% endif %}
             </div>
         </div>
         {% empty %}
         <div class="text-center py-12 bg-white rounded-xl shadow border">
-            <p class="text-gray-500 text-lg">Aucune donnée territoriale n'est encore disponible. Connectez-vous à l'interface d'administration maîtresse pour ajouter des régions et des communes.</p>
+            <p class="text-gray-500 text-lg">Aucune donnée territoriale n'est encore disponible. Connectez-vous au panel d'administration pour configurer les régions.</p>
             <a href="/admin/" class="mt-4 inline-block bg-green-700 text-white px-6 py-2 rounded-lg font-medium hover:bg-green-800">
                 Accéder au Django Admin
             </a>
@@ -107,10 +95,8 @@
 
     </main>
 
-    <!-- PIED DE PAGE -->
     <footer class="bg-gray-900 text-gray-400 py-8 text-center text-sm border-t border-gray-800 mt-20">
         <p>&copy; 2026 TerritoireConnect - Programme SADDUR unifié. Tous droits réservés.</p>
-        <p class="text-xs text-gray-600 mt-2">Développé pour la modernisation des services municipaux au Cameroun.</p>
     </footer>
 
 </body>
