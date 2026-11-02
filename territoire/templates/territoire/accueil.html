@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TerritoireConnect | Portail des Communes du Cameroun</title>
+    <!-- Tailwind CSS pour un design professionnel et rapide -->
+    <script src="https://tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50 text-gray-800 font-sans">
+
+    <!-- BARRE DE NAVIGATION -->
+    <nav class="bg-green-700 text-white shadow-md">
+        <div class="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
+            <a href="{% url 'accueil_portail' %}" class="text-2xl font-bold tracking-wide flex items-center gap-2">
+                🇨🇲 <span class="text-yellow-400">Territoire</span>Connect
+            </a>
+            <span class="text-sm bg-green-800 px-3 py-1 rounded-full border border-green-600">
+                République du Cameroun
+            </span>
+        </div>
+    </nav>
+
+    <!-- ENTÊTE PRINCIPALE -->
+    <header class="bg-gradient-to-r from-green-800 via-green-700 to-yellow-600 text-white py-16 px-4 text-center">
+        <div class="max-w-3xl mx-auto">
+            <h1 class="text-4xl md:text-5xl font-extrabold mb-4">Portail Officiel des Collectivités Territoriales</h1>
+            <p class="text-lg text-green-100 mb-8">Accédez aux espaces vitrines, actualités, appels d'offres et registres d'état civil de vos mairies.</p>
+        </div>
+    </header>
+
+    <!-- AFFICHAGE DES MESSAGES DE NOTIFICATION -->
+    {% if messages %}
+    <div class="max-w-7xl mx-auto px-4 mt-6">
+        {% for message in messages %}
+        <div class="p-4 rounded-lg {% if message.tags == 'success' %}bg-green-100 text-green-800{% else %}bg-red-100 text-red-800{% endif %}">
+            {{ message }}
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <!-- CONTENU PRINCIPAL : LISTE DES MAIRIES PAR RÉGIONS -->
+    <main class="max-w-7xl mx-auto px-4 py-12">
+        
+        <h2 class="text-2xl font-bold text-gray-700 mb-8 border-b-2 border-yellow-500 pb-2 inline-block">
+            🗺️ Découvrir les Communes par Région
+        </h2>
+
+        {% for region in regions %}
+        <div class="mb-12">
+            <!-- TITRE DE LA RÉGION -->
+            <div class="bg-gray-200 px-4 py-2 rounded-t-lg font-bold text-lg text-green-900 border-l-4 border-green-700 shadow-sm flex justify-between items-center">
+                <span>Région du {{ region.nom }}</span>
+                <span class="text-sm text-gray-500 font-normal">{{ region.departements.count }} Département(s)</span>
+            </div>
+
+            <!-- GRILLE DES MAIRIES RATTACHÉES -->
+            <div class="bg-white p-6 rounded-b-lg shadow border-x border-b border-gray-200 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {% font_mairie_trouvee = False %}
+                
+                {% for departement in region.departements.all %}
+                    {% for mairie in departement.mairies.all %}
+                        {% font_mairie_trouvee = True %}
+                        <div class="border rounded-xl p-5 hover:shadow-md transition-shadow bg-gray-50 flex flex-col justify-between">
+                            <div>
+                                <div class="flex justify-between items-start mb-2">
+                                    <h3 class="text-lg font-bold text-gray-900">{{ mairie.nom }}</h3>
+                                    {% if mairie.est_premium %}
+                                        <span class="bg-yellow-100 text-yellow-800 text-xs px-2 py-0.5 rounded-full font-semibold border border-yellow-300">
+                                            Engagée
+                                        </span>
+                                    {% endif %}
+                                </div>
+                                <p class="text-xs text-gray-500 mb-4">Département : {{ departement.nom }}</p>
+                            </div>
+
+                            <!-- ACTIONS ACCESSIBLES -->
+                            <div class="mt-4 pt-4 border-t border-gray-200 flex flex-wrap gap-2 justify-between items-center">
+                                <a href="{% url 'detail_mairie' slug=mairie.slug %}" class="text-sm font-medium text-green-700 hover:text-green-900 underline">
+                                    Voir la Vitrine →
+                                </a>
+                                
+                                <!-- LIEN ADMIN VERS L'ESPACE MAIRE -->
+                                <a href="{% url 'modifier_vitrine_prive' slug=mairie.slug %}" class="text-xs bg-gray-200 hover:bg-gray-300 text-gray-700 px-3 py-1.5 rounded-md font-medium transition-colors flex items-center gap-1">
+                                    🔒 Espace Com
+                                </a>
+                            </div>
+                        </div>
+                    {% empty %}
+                    {% endfor %}
+                {% endfor %}
+
+                {% if not font_mairie_trouvee %}
+                <p class="text-sm text-gray-400 italic col-span-full">Aucune mairie enregistrée ou configurée pour cette région.</p>
+                {% endif %}
+            </div>
+        </div>
+        {% empty %}
+        <div class="text-center py-12 bg-white rounded-xl shadow border">
+            <p class="text-gray-500 text-lg">Aucune donnée territoriale n'est encore disponible. Connectez-vous à l'interface d'administration maîtresse pour ajouter des régions et des communes.</p>
+            <a href="/admin/" class="mt-4 inline-block bg-green-700 text-white px-6 py-2 rounded-lg font-medium hover:bg-green-800">
+                Accéder au Django Admin
+            </a>
+        </div>
+        {% endfor %}
+
+    </main>
+
+    <!-- PIED DE PAGE -->
+    <footer class="bg-gray-900 text-gray-400 py-8 text-center text-sm border-t border-gray-800 mt-20">
+        <p>&copy; 2026 TerritoireConnect - Programme SADDUR unifié. Tous droits réservés.</p>
+        <p class="text-xs text-gray-600 mt-2">Développé pour la modernisation des services municipaux au Cameroun.</p>
+    </footer>
+
+</body>
+</html>

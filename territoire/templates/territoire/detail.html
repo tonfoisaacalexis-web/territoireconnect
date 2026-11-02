@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Vitrine Officielle — Mairie de {{ mairie.nom }}</title>
+    <style>
+        body { font-family: system-ui, sans-serif; background-color: #f8fafc; padding: 40px; color: #1e293b; }
+        .container { max-width: 800px; margin: 0 auto; background: white; padding: 40px; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); }
+        .alert-success { background-color: #dcfce7; border: 1px solid #bbf7d0; color: #15803d; padding: 15px; border-radius: 6px; font-weight: bold; margin-bottom: 25px; }
+        h1 { color: #059669; border-bottom: 2px solid #e2e8f0; padding-bottom: 10px; }
+        .section { margin-top: 25px; padding: 15px; background: #f1f5f9; border-radius: 8px; }
+        .section h3 { margin-top: 0; color: #1e3a8a; text-transform: uppercase; font-size: 13px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Message de succès de republication -->
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert-success">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+
+        <h1>🏛️ Mairie de {{ mairie.nom }}</h1>
+        <p><b>Maire de la commune :</b> {{ mairie.nom_du_maire|default:"Non renseigné" }}</p>
+        
+        <div class="section">
+            <h3>📝 Mot de l'Exécutif Municipal</h3>
+            <p>{{ mairie.mot_du_maire|default:"Aucun mot enregistré pour le moment."|linebreaksbr }}</p>
+        </div>
+
+        <div class="section">
+            <h3>📜 Histoire & Fondations</h3>
+            <p>{{ mairie.histoire|default:"Données en attente de publication."|linebreaksbr }}</p>
+        </div>
+
+        <div class="section">
+            <h3>🏗️ Grands Chantiers de Développement</h3>
+            <p><b>Court Terme :</b> {{ mairie.projets_court_terme|default:"Aucun" }}</p>
+            <p><b>Long Terme :</b> {{ mairie.projets_long_terme|default:"Aucun" }}</p>
+        </div>
+    </div>
+</body>
+</html>
