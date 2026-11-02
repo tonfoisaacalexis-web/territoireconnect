@@ -7,3 +7,4 @@ qrcode==8.2
 reportlab==5.1.0
 sqlparse==0.6.1
 tzdata==2026.6
+gunicorn
