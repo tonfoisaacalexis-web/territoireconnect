@@ -2,33 +2,140 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <title>Espace de Publication Annuelle — Mairie de {{ mairie.nom }}</title>
-    <style>
-        body { font-family: system-ui, sans-serif; background-color: #f1f5f9; padding: 4px; margin: 0; display: flex; align-items: center; justify-content: center; min-height: 100vh; }
-        .box { background: white; padding: 40px; border-radius: 12px; max-width: 600px; width: 100%; box-shadow: 0 10px 25px rgba(0,0,0,0.05); border-top: 8px solid #059669; }
-        .group { margin-bottom: 20px; }
-        .group label { display: block; font-size: 13px; font-weight: bold; color: #334155; margin-bottom: 6px; text-transform: uppercase; }
-        .group input, .group textarea { width: 100%; padding: 12px; border: 1px solid #cbd5e1; border-radius: 6px; box-sizing: border-box; font-size: 14px; }
-        .btn { background: #059669; color: white; border: none; padding: 15px; font-weight: bold; border-radius: 6px; width: 100%; cursor: pointer; text-transform: uppercase; letter-spacing: 0.5px; }
-    </style>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Espace Com | Mairie de {{ mairie.nom }}</title>
+    <!-- Tailwind CSS pour un design professionnel -->
+    <script src="https://tailwindcss.com"></script>
 </head>
-<body>
-    <div class="box">
-        <h2 style="color: #059669; margin-top: 0; font-size: 20px; font-weight: 800;">🏛️ Mairie de {{ mairie.nom }} — Bureau des Publications</h2>
-        <p style="color: #64748b; font-size: 14px; margin-bottom: 25px;">Saisissez vos rapports et chantiers de développement pour les déployer en direct sur le portail public.</p>
+<body class="bg-gray-100 text-gray-800 font-sans leading-normal tracking-normal">
+
+    <!-- EN-TÊTE DE NAVIGATION -->
+    <nav class="bg-green-800 text-white shadow-md sticky top-0 z-50">
+        <div class="max-w-6xl mx-auto px-4 py-3 flex justify-between items-center">
+            <div class="flex items-center gap-3">
+                <span class="text-2xl">🇨🇲</span>
+                <div>
+                    <h1 class="font-bold text-lg leading-tight">Mairie de {{ mairie.nom }}</h1>
+                    <p class="text-xs text-green-200">Espace d'Édition de la Vitrine Communale</p>
+                </div>
+            </div>
+            <a href="{% url 'detail_mairie' slug=mairie.slug %}" class="text-sm bg-green-700 hover:bg-green-600 px-4 py-2 rounded-lg font-medium transition-colors">
+                👁️ Voir le Site Public
+            </a>
+        </div>
+    </nav>
+
+    <!-- ZONE DE CONTENU PRINCIPAL -->
+    <main class="max-w-4xl mx-auto px-4 py-8">
         
-        <form method="POST" enctype="multipart/form-data">
+        <!-- EN-TÊTE DE BIENVENUE -->
+        <div class="bg-white rounded-2xl shadow-sm border p-6 mb-8 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+            <div>
+                <h2 class="text-2xl font-bold text-gray-800">Bonjour, Équipe de Communication !</h2>
+                <p class="text-sm text-gray-500 mt-1">Mettez à jour les informations annuelles et le mot de l'Exécutif Municipal.</p>
+            </div>
+            <div class="text-xs bg-yellow-100 text-yellow-800 border border-yellow-300 font-medium px-3 py-1.5 rounded-full">
+                🔒 Session Communale Sécurisée
+            </div>
+        </div>
+
+        <!-- FORMULAIRE DE MISE À JOUR -->
+        <!-- L'attribut enctype est obligatoire pour pouvoir téléverser la photo du Maire -->
+        <form method="POST" enctype="multipart/form-data" class="space-y-8">
             {% csrf_token %}
-            <div class="group"><label>Nom complet de Monsieur le Maire</label><input type="text" name="nom_du_maire" value="{{ mairie.nom_du_maire|default:'' }}"></div>
-            <div class="group"><label>Photo officielle de l'Exécutif</label><input type="file" name="photo_du_maire" accept="image/*"></div>
-            <div class="group"><label>Mot d'orientation générale</label><textarea name="mot_du_maire" rows="3">{{ mairie.mot_du_maire|default:'' }}</textarea></div>
-            <div class="group"><label>Histoire & Fondations du Territoire</label><textarea name="histoire" rows="3">{{ mairie.histoire|default:'' }}</textarea></div>
-            <div class="group"><label>Géographie, Limites et Climat</label><textarea name="geographie" rows="2">{{ mairie.geographie|default:'' }}</textarea></div>
-            <div class="group"><label>Vision stratégique de développement</label><textarea name="vision_mairie" rows="3">{{ mairie.vision_mairie|default:'' }}</textarea></div>
-            <div class="group"><label>Chantiers prioritaires à Court Terme</label><textarea name="projets_court_terme" rows="2">{{ mairie.projets_court_terme|default:'' }}</textarea></div>
-            <div class="group"><label>Grands Projets à Long Terme</label><textarea name="projets_long_terme" rows="2">{{ mairie.projets_long_terme|default:'' }}</textarea></div>
-            <button type="submit" class="btn">🚀 Enregistrer et Publier la Vitrine</button>
+
+            <!-- SECTION 1 : EXÉCUTIF MUNICIPAL -->
+            <div class="bg-white rounded-2xl shadow-sm border p-6">
+                <h3 class="text-lg font-bold text-green-800 border-b pb-3 mb-6 flex items-center gap-2">
+                    👤 L'Exécutif Municipal
+                </h3>
+                
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <!-- Photo actuelle et téléversement -->
+                    <div class="md:col-span-1 flex flex-col items-center justify-center border-2 border-dashed border-gray-200 rounded-xl p-4 bg-gray-50">
+                        {% if mairie.photo_du_maire %}
+                            <img src="{{ mairie.photo_du_maire.url }}" alt="Photo du Maire" class="w-32 h-32 object-cover rounded-full shadow-md border-2 border-green-600 mb-3">
+                        {% else %}
+                            <div class="w-32 h-32 rounded-full bg-gray-200 flex items-center justify-center text-gray-400 mb-3 text-4xl">👤</div>
+                        {% endif %}
+                        <label class="block text-xs font-semibold text-gray-600 mb-1">Photo Officielle</label>
+                        <input type="file" name="photo_du_maire" accept="image/*" class="text-xs text-gray-500 file:mr-2 file:py-1 file:px-2 file:rounded-md file:border-0 file:text-xs file:font-semibold file:bg-green-50 file:text-green-700 hover:file:bg-green-100 w-full">
+                    </div>
+
+                    <!-- Nom et Mot du Maire -->
+                    <div class="md:col-span-2 space-y-4">
+                        <div>
+                            <label for="nom_du_maire" class="block text-sm font-medium text-gray-700 mb-1">Nom complet du Maire</label>
+                            <input type="text" id="nom_du_maire" name="nom_du_maire" value="{{ mairie.nom_du_maire|default_if_none:'' }}" 
+                                   class="w-full px-4 py-2.5 border rounded-xl focus:ring-2 focus:ring-green-500 outline-none transition-shadow" placeholder="Ex: Sa Majesté ou Monsieur / Madame le Maire...">
+                        </div>
+                        <div>
+                            <label for="mot_du_maire" class="block text-sm font-medium text-gray-700 mb-1">Mot de l'Exécutif Municipal</label>
+                            <textarea id="mot_du_maire" name="mot_du_maire" rows="4" 
+                                      class="w-full px-4 py-2 border rounded-xl focus:ring-2 focus:ring-green-500 outline-none transition-shadow resize-none" placeholder="Message d'introduction ou mot de bienvenue aux citoyens et investisseurs...">{{ mairie.mot_du_maire|default_if_none:'' }}</textarea>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SECTION 2 : PRÉSENTATION DE LA COMMUNE -->
+            <div class="bg-white rounded-2xl shadow-sm border p-6">
+                <h3 class="text-lg font-bold text-green-800 border-b pb-3 mb-6 flex items-center gap-2">
+                    🏛️ Monographie et Territoire
+                </h3>
+                <div class="space-y-6">
+                    <div>
+                        <label for="histoire" class="block text-sm font-medium text-gray-700 mb-1">Histoire de la commune</label>
+                        <textarea id="histoire" name="histoire" rows="4" class="w-full px-4 py-2 border rounded-xl focus:ring-2 focus:ring-green-500 outline-none" placeholder="Origines, grands chefs traditionnels, événements marquants de la création à nos jours...">{{ mairie.histoire|default_if_none:'' }}</textarea>
+                    </div>
+                    <div>
+                        <label for="geographie" class="block text-sm font-medium text-gray-700 mb-1">Géographie, Population et Climat</label>
+                        <textarea id="geographie" name="geographie" rows="4" class="w-full px-4 py-2 border rounded-xl focus:ring-2 focus:ring-green-500 outline-none" placeholder="Superficie, limites territoriales, saisons, groupes ethniques autochtones...">{{ mairie.geographie|default_if_none:'' }}</textarea>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SECTION 3 : STRATÉGIE ET PROJETS DE DÉVELOPPEMENT -->
+            <div class="bg-white rounded-2xl shadow-sm border p-6">
+                <h3 class="text-lg font-bold text-green-800 border-b pb-3 mb-6 flex items-center gap-2">
+                    🚀 Vision Stratégique & Chantiers (Plan Communal)
+                </h3>
+                <div class="space-y-6">
+                    <div>
+                        <label for="vision_mairie" class="block text-sm font-medium text-gray-700 mb-1">Vision stratégique globale</label>
+                        <textarea id="vision_mairie" name="vision_mairie" rows="3" class="w-full px-4 py-2 border rounded-xl focus:ring-2 focus:ring-green-500 outline-none" placeholder="Ligne directrice de la mairie pour faire rayonner la commune...">{{ mairie.vision_mairie|default_if_none:'' }}</textarea>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label for="projets_court_terme" class="block text-sm font-medium text-gray-700 mb-1">Chantiers à Court Terme</label>
+                            <textarea id="projets_court_terme" name="projets_court_terme" rows="5" class="w-full px-4 py-2 border rounded-xl focus:ring-2 focus:ring-green-500 outline-none" placeholder="Routes à reprofiler, forages d'eau à construire, éclairage public en cours de déploiement...">{{ mairie.projets_court_terme|default_if_none:'' }}</textarea>
+                        </div>
+                        <div>
+                            <label for="projets_long_terme" class="block text-sm font-medium text-gray-700 mb-1">Grands Projets à Long Terme</label>
+                            <textarea id="projets_long_terme" name="projets_long_terme" rows="5" class="w-full px-4 py-2 border rounded-xl focus:ring-2 focus:ring-green-500 outline-none" placeholder="Construction d'un marché moderne, hôtel de ville principal, électrification globale, zones industrielles...">{{ mairie.projets_long_terme|default_if_none:'' }}</textarea>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- BOUTON DE SOUMISSION PERSISTANT -->
+            <div class="flex items-center justify-end gap-4 bg-gray-50 border p-4 rounded-xl sticky bottom-4 shadow-md">
+                <a href="{% url 'accueil_portail' %}" class="px-5 py-2.5 rounded-xl border bg-white hover:bg-gray-50 font-medium text-sm transition-colors text-center">
+                    Annuler
+                </a>
+                <button type="submit" class="px-6 py-2.5 rounded-xl bg-green-700 hover:bg-green-800 text-white font-semibold text-sm shadow-sm transition-colors text-center">
+                    💾 Enregistrer les Modifications
+                </button>
+            </div>
+
         </form>
-    </div>
+    </main>
+
+    <!-- PIED DE PAGE TECHNIQUE -->
+    <footer class="bg-gray-900 text-gray-400 py-6 text-center text-xs border-t mt-16">
+        <p>&copy; 2026 TerritoireConnect - Programme SADDUR unifié.</p>
+        <p class="text-gray-600 mt-1">Espace réservé exclusivement aux équipes municipales authentifiées du Cameroun.</p>
+    </footer>
+
 </body>
 </html>
